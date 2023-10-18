@@ -24,38 +24,44 @@ async function run() {
     await client.connect();
     console.log("Connected to MongoDB database");
 
-    const database = client.db("users");
-    const userCollection = database.collection("user");
+    const database = client.db("EagleTech");
+    const products = database.collection("products");
 
 
-    // app.post('/adduser', async (req, res) => {
-    //   try {
-    //     const userData = req.body;
-    //     const result = await userCollection.insertOne(userData);
-    //     res.json(result);
-    //   } catch (error) {
-    //     console.error('Error adding user:', error);
-    //     res.status(500).json({ error: 'Internal server error' });
-    //   }
-    // });
+    app.post('/addpost', async (req, res) => {
+      try {
+        const postdata = req.body;
+        const result = await products.insertOne(postdata);
+        res.json(result);
+      } catch (error) {
+        console.error('Error adding user:', error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
+    });
 
-    // app.get('/viewusers', async (req, res) => {
-    //     try {
-    //         const users = await userCollection.find({}).sort({ _id: -1 }).toArray();
-    //       res.json(users);
-    //     } catch (error) {
-    //       console.error('Error fetching users:', error);
-    //       res.status(500).json({ error: 'Internal server error' });
-    //     }
-    //   });
+    app.get('/addpost/:brand', async (req, res) => {
+      try {
+        const brand = req.params.brand;
+        console.log(brand);
+    
+        const query = { brand: brand }; 
+        const cursor = await products.find(query).toArray();
+    
+        res.json(cursor); 
+      } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+      }
+    });
+    
+    
 
   } finally {
-    // Ensures that the client will close when you finish/error
-    // await client.close();
+
   }
 }
 app.get('/', (req, res) => {
-  res.send('EpicTechSpot server is running');
+  res.send('Eagle Tech server is running');
 });
 
 app.listen(port, () => {
