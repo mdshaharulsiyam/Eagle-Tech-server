@@ -100,6 +100,19 @@ async function run() {
         res.status(500).json({ success: false, message: 'Internal Server Error' });
       }
     });
+    app.delete('/deleteproduct/:id', async (req, res) => {
+      try {
+        const id = req.params.id;
+        console.log(id)
+        const query = { _id: id};
+        const result = await curt.deleteOne(query);
+    
+        res.json(result); 
+      } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+      }
+    });
 
     app.put('/productDetails/:id', async (req, res) => {
       try {
