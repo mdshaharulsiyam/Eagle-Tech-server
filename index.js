@@ -35,7 +35,7 @@ async function run() {
         res.json(result);
       } catch (error) {
         console.error('Error adding user:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server Error' });
       }
     });
 
