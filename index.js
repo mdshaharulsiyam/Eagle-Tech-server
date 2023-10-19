@@ -1,7 +1,7 @@
 require('dotenv').config()
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -42,9 +42,21 @@ async function run() {
     app.get('/addpost/:brand', async (req, res) => {
       try {
         const brand = req.params.brand;
-        console.log(brand);
-    
+        console.log(brand)
         const query = { brand: brand }; 
+        const cursor = await products.find(query).toArray();
+    
+        res.json(cursor); 
+      } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+      }
+    });
+    app.get('/productDetails/:id', async (req, res) => {
+      try {
+        const id = req.params.id;
+        console.log(id)
+        const query = { _id: new ObjectId(id) };
         const cursor = await products.find(query).toArray();
     
         res.json(cursor); 
