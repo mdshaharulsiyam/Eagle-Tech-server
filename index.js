@@ -44,9 +44,9 @@ async function run() {
         const brand = req.params.brand;
         console.log(brand)
         const query = { brand: brand }; 
-        const cursor = await products.find(query).toArray();
+        const result = await products.find(query).toArray();
     
-        res.json(cursor); 
+        res.json(result); 
       } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ success: false, message: 'Internal Server Error' });
@@ -57,9 +57,36 @@ async function run() {
         const id = req.params.id;
         console.log(id)
         const query = { _id: new ObjectId(id) };
-        const cursor = await products.find(query).toArray();
+        const result = await products.find(query).toArray();
     
-        res.json(cursor); 
+        res.json(result); 
+      } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+      }
+    });
+
+    app.put('/productDetails/:id', async (req, res) => {
+      try {
+        const id = req.params.id;
+        console.log(id)
+        const updatedata = req.body;
+        const filter  = { _id: new ObjectId(id) };
+        const options = { upsert: true };
+        const updateproduct = {
+          $set: {
+            product: updatedata.product,
+            brand : updatedata.brand,
+            type : updatedata.type,
+            image : updatedata.image,
+            price : updatedata.price,
+            Rating : updatedata.Rating,
+            description : updatedata.description
+          },
+        };
+        const result = await products.updateOne(filter, updateproduct, options);
+    
+        res.json(result); 
       } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ success: false, message: 'Internal Server Error' });
