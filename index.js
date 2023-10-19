@@ -20,18 +20,29 @@ const client = new MongoClient(uri, {
 });
 async function run() {
   try {
-    // Connect the client to the server (optional starting in v4.7)
+
     await client.connect();
     console.log("Connected to MongoDB database");
 
     const database = client.db("EagleTech");
     const products = database.collection("products");
+    const curt = database.collection("curt");
 
 
     app.post('/addpost', async (req, res) => {
       try {
         const postdata = req.body;
         const result = await products.insertOne(postdata);
+        res.json(result);
+      } catch (error) {
+        console.error('Error adding user:', error);
+        res.status(500).json({ error: 'Internal server Error' });
+      }
+    });
+    app.post('/addcurt', async (req, res) => {
+      try {
+        const cartdata = req.body;
+        const result = await curt.insertOne(cartdata);
         res.json(result);
       } catch (error) {
         console.error('Error adding user:', error);
@@ -45,6 +56,17 @@ async function run() {
         console.log(brand)
         const query = { brand: brand }; 
         const result = await products.find(query).toArray();
+    
+        res.json(result); 
+      } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+      }
+    });
+    app.get('/addcurt', async (req, res) => {
+      try {
+      
+        const result = await curt.find({}).toArray();
     
         res.json(result); 
       } catch (error) {
